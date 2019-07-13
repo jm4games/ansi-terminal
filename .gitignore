@@ -4,6 +4,7 @@ dist-newstyle/
 .ghc.*
 *.hi
 *.o
+.stack-work
 
 # Haddock documentation
 docs/

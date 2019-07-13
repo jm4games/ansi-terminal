@@ -11,12 +11,14 @@ module System.Console.ANSI.Unix
 
 import Control.Exception.Base (bracket)
 import System.IO (BufferMode (..), Handle, hFlush, hGetBuffering, hGetEcho,
-  hIsTerminalDevice, hIsWritable, hPutStr, hSetBuffering, hSetEcho, stdin,
+  hIsTerminalDevice, hIsWritable, hSetBuffering, hSetEcho, stdin,
   stdout)
 import Text.ParserCombinators.ReadP (readP_to_S)
 
 import System.Console.ANSI.Codes
 import System.Console.ANSI.Types
+
+import qualified Data.ByteString.Builder as BB
 
 -- This file contains code that is common to modules System.Console.ANSI.Unix,
 -- System.Console.ANSI.Windows and System.Console.ANSI.Windows.Emulator, such as
@@ -29,39 +31,39 @@ import System.Console.ANSI.Types
 -- Common-Include-Emulator.hs in respect of the latter).
 #include "Common-Include-Enabled.hs"
 
-hCursorUp h n = hPutStr h $ cursorUpCode n
-hCursorDown h n = hPutStr h $ cursorDownCode n
-hCursorForward h n = hPutStr h $ cursorForwardCode n
-hCursorBackward h n = hPutStr h $ cursorBackwardCode n
+hCursorUp h n = BB.hPutBuilder h $ cursorUpCode n
+hCursorDown h n = BB.hPutBuilder h $ cursorDownCode n
+hCursorForward h n = BB.hPutBuilder h $ cursorForwardCode n
+hCursorBackward h n = BB.hPutBuilder h $ cursorBackwardCode n
 
-hCursorDownLine h n = hPutStr h $ cursorDownLineCode n
-hCursorUpLine h n = hPutStr h $ cursorUpLineCode n
+hCursorDownLine h n = BB.hPutBuilder h $ cursorDownLineCode n
+hCursorUpLine h n = BB.hPutBuilder h $ cursorUpLineCode n
 
-hSetCursorColumn h n = hPutStr h $ setCursorColumnCode n
-hSetCursorPosition h n m = hPutStr h $ setCursorPositionCode n m
+hSetCursorColumn h n = BB.hPutBuilder h $ setCursorColumnCode n
+hSetCursorPosition h n m = BB.hPutBuilder h $ setCursorPositionCode n m
 
-hSaveCursor h = hPutStr h saveCursorCode
-hRestoreCursor h = hPutStr h restoreCursorCode
-hReportCursorPosition h = hPutStr h reportCursorPositionCode
+hSaveCursor h = BB.hPutBuilder h saveCursorCode
+hRestoreCursor h = BB.hPutBuilder h restoreCursorCode
+hReportCursorPosition h = BB.hPutBuilder h reportCursorPositionCode
 
-hClearFromCursorToScreenEnd h = hPutStr h clearFromCursorToScreenEndCode
+hClearFromCursorToScreenEnd h = BB.hPutBuilder h clearFromCursorToScreenEndCode
 hClearFromCursorToScreenBeginning h
-    = hPutStr h clearFromCursorToScreenBeginningCode
-hClearScreen h = hPutStr h clearScreenCode
+    = BB.hPutBuilder h clearFromCursorToScreenBeginningCode
+hClearScreen h = BB.hPutBuilder h clearScreenCode
 
-hClearFromCursorToLineEnd h = hPutStr h clearFromCursorToLineEndCode
-hClearFromCursorToLineBeginning h = hPutStr h clearFromCursorToLineBeginningCode
-hClearLine h = hPutStr h clearLineCode
+hClearFromCursorToLineEnd h = BB.hPutBuilder h clearFromCursorToLineEndCode
+hClearFromCursorToLineBeginning h = BB.hPutBuilder h clearFromCursorToLineBeginningCode
+hClearLine h = BB.hPutBuilder h clearLineCode
 
-hScrollPageUp h n = hPutStr h $ scrollPageUpCode n
-hScrollPageDown h n = hPutStr h $ scrollPageDownCode n
+hScrollPageUp h n = BB.hPutBuilder h $ scrollPageUpCode n
+hScrollPageDown h n = BB.hPutBuilder h $ scrollPageDownCode n
 
-hSetSGR h sgrs = hPutStr h $ setSGRCode sgrs
+hSetSGR h sgrs = BB.hPutBuilder h $ setSGRCode sgrs
 
-hHideCursor h = hPutStr h hideCursorCode
-hShowCursor h = hPutStr h showCursorCode
+hHideCursor h = BB.hPutBuilder h hideCursorCode
+hShowCursor h = BB.hPutBuilder h showCursorCode
 
-hSetTitle h title = hPutStr h $ setTitleCode title
+hSetTitle h title = BB.hPutBuilder h $ setTitleCode title
 
 -- hSupportsANSI :: Handle -> IO Bool
 -- (See Common-Include.hs for Haddock documentation)

@@ -104,10 +104,10 @@ showCursor = hShowCursor stdout
 
 -- | Set the terminal window title
 hSetTitle :: Handle
-          -> String -- ^ New title
+          -> BB.Builder -- ^ New title
           -> IO ()
 -- | Set the terminal window title
-setTitle :: String -- ^ New title
+setTitle :: BB.Builder -- ^ New title
          -> IO ()
 setTitle = hSetTitle stdout
 
